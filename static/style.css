@@ -156,3 +156,16 @@ path {
     align-items: center;
 
 }
+
+#allInfo{
+    display: block;
+    width: 100%;
+
+}
+.index_children{
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
