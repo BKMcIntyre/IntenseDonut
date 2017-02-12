@@ -42,6 +42,14 @@ $(document).ready(function() {
                         type = value.response.content.mimeType.substring(0, value.response.content.mimeType.indexOf(';'));
                     }
 
+
+                    if (type =='Not set') {
+
+                        if (value.request.url.indexOf('.js')) {
+                            type = 'text/javascript';
+                        }
+                    }
+
                     var l = getLocation(value.request.url);
 
                     window.filter_data.push({
