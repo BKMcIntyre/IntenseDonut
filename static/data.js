@@ -38,15 +38,29 @@ $(document).ready(function() {
 
                     var type = 'Not set';
 
-                    if (value.response.content['mimeType'] && value.response.content.mimeType.indexOf(';') > 0) {
-                        type = value.response.content.mimeType.substring(0, value.response.content.mimeType.indexOf(';'));
+
+                    if (value.response.content['mimeType']) {
+
+                        if (value.response.content.mimeType.indexOf(';') > 0) {
+                            type = value.response.content.mimeType.substring(0, value.response.content.mimeType.indexOf(';'));
+                        } else {
+                            type = value.response.content.mimeType;        
+                        }
+                        
                     }
+                    
 
 
                     if (type =='Not set') {
-
-                        if (value.request.url.indexOf('\.js') > 0) {
+                        var url_lower = value.request.url.toLowerCase();
+                        if (url_lower.indexOf('\.js') > 0) {
                             type = 'text/javascript';
+                        }
+                        if (url_lower.indexOf('\.jpg') > 0) {
+                            type = 'image/jpg';
+                        }
+                        if (url_lower.indexOf('\.jpeg') > 0) {
+                            type = 'image/jpeg';
                         }
                     }
 
