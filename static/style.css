@@ -5,15 +5,19 @@ div{
     margin:0px;
     padding: 0px;
 }
+#inputDiv {
+    display: inline-block;
+}
 #title{
     width: 100%;
     text-align: center;
 }
-#navigation{
+#selections{
     width: 100%;
-    margin:0px;
+    margin:10px;
     padding: 0px;
-    display: flex;
+    text-align:center;
+    display: none;
 }
 .filters{
     display: flex-box;
@@ -28,10 +32,9 @@ div{
     color: black;
 }
 
+#container {
 
-#inputDiv{
     display: flex;
-    text-align: center;
 }
 
 path {

@@ -4,44 +4,109 @@
         <title>Intense Donut</title>
 
         <script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
-        <script type='text/javascript' src='//d3js.org/d3.v3.min.js'></script>
+        <script type='text/javascript' src='/static/d3.v3.js'></script>
 
         <script type='text/javascript' src='/static/data.js'></script>
 
-        <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Oxygen'/>
+        <!-- <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Oxygen'/> -->
         <link type='text/css' rel='stylesheet' href='/static/style.css'/>
     </head>
     <body>
         <header>
             <div id='title'>
-                <h1>Intense Donut</h1>
-            </div>
-            <div id='navigation'>
-
-                <select>
-                  <option value="status">status</option>
-                  <option value="type">type</option>
-                  <option value="method">method</option>
-                  <option value="domain">domain</option>
-                  <option value="ipaddress">ipaddress</option>
-                </select>
-
-                <span class='filters' data-filter-type="status">Option 1</span>
-                <span class='filters' data-filter-type="type">Option 2</span>
-                <span class='filters' data-filter-type="method">Option 3</span>
-                <span class='filters' data-filter-type="domain">Option 4</span>
-                <span class='filters' data-filter-type="ipaddress">Option 5</span>
+                <div id='inputDiv'>
+                    <input id='upload' type='file' accept='har'></input>
+                </div>
+                <div id='selections'>
+                    <select>
+                        <option value="type">MIME Type</option>
+                        <option value="status">Status Code</option>
+                        <option value="method">Request Method</option>
+                        <option value="host">Host</option>
+                        <option value="httpVersion">HTTP Version</option>
+                    </select>
+                    <select>
+                        <option value="status">Status Code</option>
+                        <option value="type">MIME Type</option>
+                        <option value="method">Request Method</option>
+                        <option value="host">Host</option>
+                        <option value="httpVersion">HTTP Version</option>
+                    </select>
+                    <select>
+                        <option value="host">Host</option>
+                        <option value="status">Status Code</option>
+                        <option value="type">MIME Type</option>
+                        <option value="method">Request Method</option>
+                        <option value="httpVersion">HTTP Version</option>
+                    </select>
+                    <button id="render">Render</button>
+                </div>
             </div>
         </header>
-        <div id='inputDiv'>
-            <input id='upload' type='file' accept='har'></input>
-        </div>
+        
         <div id='container'>
             <div id='chart'></div>
-            <div id='table'></div>
+            <div id='table'>
+                <p>
+                    <b>Type : </b><span id="selected_type"></span>    
+                </p>
+                <p>
+                    <b>Value : </b><span id="selected_name"></span>    
+                </p>
+
+                <p>
+                    <b>Children</b>    
+                </p>
+
+                <table>
+                   
+                </table>
+                
+
+
+                
+
+            </div>
         </div>
     </body>
     <script type='text/javascript'>
+
+    function showDetails(d) {
+        console.log(d);
+
+
+        $('#selected_type').text(d.filter_name);
+        $('#selected_name').text(d.name);
+
+        $('table').empty();
+
+        var all_children = [];
+
+        function getAllLeaf(data) {
+
+            if (data['children']) {
+                getAllLeaf(data.children);    
+            } else {
+                all_children.push(data);
+            }
+
+        }
+
+        getAllLeaf(d.children);
+
+        console.log(all_children);
+
+        $.each(all_children, function(i) {
+
+            $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
+            
+
+        });
+ 
+
+
+
+    }
         
 
         var width = 1200,
@@ -85,8 +150,6 @@
         }
 
         function drawChart(root) { 
-
-
             
               var g = svg.selectAll("g")
                   .data(partition.nodes(root))
@@ -105,6 +168,10 @@
                 .text(function(d) { return d.name; });
 
               function click(d) {
+
+                
+
+                showDetails(d);
                 // fade out all text elements
                 text.transition().attr("opacity", 0);
 
@@ -162,7 +229,8 @@
                 for (var item in data) {
                     children.push({
                         name: window.har_data.log.entries[data[item].index].request.url,
-                        size: window.har_data.log.entries[data[item].index].time
+                        size: window.har_data.log.entries[data[item].index].time,
+                        id: data[item].index
                     });
                 }
                 return children;
@@ -197,6 +265,7 @@
 
                     // move to next filter
                     children.push({
+                        filter_name: filter_name,
                         name: index,
                         children: makeChildren(divided_lists[index], filters.slice(1))
                     })
@@ -207,7 +276,8 @@
                 for (var index in requests) {
                     children.push({
                         name: "" + requests[index].time + "ms - " + requests[index].path,
-                        size: requests[index].time
+                        size: requests[index].time,
+                        index: requests[index].index
                     });
                 }
             }
@@ -219,24 +289,11 @@
         window.addEventListener('dataChanged', function() {
             if (!window.har_data || !window.filter_data) return;
 
-            var filter_settings = ['method', 'status', 'httpVersion', 'type', 'host'];
-
-            // $(".filters").each(function (index) {
-            //     filter_settings.push($( this ).data("filter-type"));
-            // });
-
-
             var chartData = {
                 name: '',
-                children: makeChildren(window.filter_data, filter_settings)
+                children: makeChildren(window.filter_data, window.filter_settings)
             };
 
-            // { filter_setting : [  items that match filter ] }
-            // { filter_setting.filter_setting2 : [  items that match filter ] }
-
-            
-
-            console.log(chartData);
             drawChart(chartData);
 
         });
