@@ -53,24 +53,14 @@
             <div id='chart'></div>
             
             <div id='table'>
-                <div id='parents'>
-                </div>
-                
-                <p>
-                    <b>Children</b>
-                </p>
-
-                <table>
-
-                </table>
+                <div id='parents'></div>
+                <table></table>
             </div>
         </div>
     </body>
     <script type='text/javascript'>
 
         function showDetails(d) {
-
-            console.log(d);
 
             $('table').empty();
 
@@ -85,10 +75,15 @@
                     all_children.push(data);
                 }
             }
+
             getAllLeaf(d);
+
             $.each(all_children, function(i) {
+                // Table content
                 $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
             });
+
+            // Parent data
 
             var all_parents = [];
 
@@ -107,12 +102,7 @@
 
             getAllParents(d);
 
-
-
-            console.log(all_parents);
-
             $('#parents').empty();
-
 
             for (var i in all_parents) {
                 if (all_parents[i].type && all_parents[i].name) {
