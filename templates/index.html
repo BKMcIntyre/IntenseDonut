@@ -51,7 +51,7 @@
 
         <div id='container'>
             <div id='chart'></div>
-
+            
             <div id='table'>
                 <div id='parents'></div>
                 <table></table>
@@ -80,7 +80,7 @@
 
             $.each(all_children, function(i) {
                 // Table content
-                $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
+                $('table').append($('<tr><td></td></tr>').text(all_children[i].url));
             });
 
             // Parent data
@@ -92,7 +92,7 @@
 
                     getAllParents(data['parent']);
 
-                }
+                } 
 
                 all_parents.push({
                     type: data.filter_name,
@@ -106,9 +106,9 @@
 
             for (var i in all_parents) {
                 if (all_parents[i].type && all_parents[i].name) {
-                    $('#parents').append($("<p></p>").text(all_parents[i].type + " : " + all_parents[i].name));
+                    $('#parents').append($("<p></p>").text(all_parents[i].type + " : " + all_parents[i].name));    
                 }
-
+                
             }
 
         }
@@ -129,7 +129,7 @@
             .attr("width", width)
             .attr("height", height)
           .append("g")
-            .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
+            .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
         var partition = d3.layout.partition()
             .value(function(d) { return d.size; });
@@ -169,12 +169,12 @@
                 .attr("x", function(d) { return y(d.y); })
                 .attr("dx", "6") // margin
                 .attr("dy", ".35em") // vertical-align
-                .text(function(d) { return d.name; })
-                .on("click", click);
+                .text(function(d) { 
+
+                    return d.name; 
+                });
 
               function click(d) {
-
-
 
                 showDetails(d);
                 // fade out all text elements
@@ -280,9 +280,10 @@
                 // For all remaining leafs
                 for (var index in requests) {
                     children.push({
-                        name: "" + requests[index].time + "ms - " + requests[index].path,
+                        name: "" + requests[index].time + "ms",
                         size: requests[index].time,
-                        index: requests[index].index
+                        index: requests[index].index,
+                        url: requests[index].url
                     });
                 }
             }
