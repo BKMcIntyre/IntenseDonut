@@ -43,7 +43,7 @@ $(document).ready(function() {
                     }
 
                     var l = getLocation(value.request.url);
-                    
+
                     window.filter_data.push({
                         index: index,
                         url: value.request.url,
@@ -64,5 +64,9 @@ $(document).ready(function() {
         } else {
             alert("Failed to load file");
         }
+    });
+    $("#styled_upload").click(function(){
+        $("#upload").click();
+        return false;
     });
 });
