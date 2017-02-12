@@ -1,26 +1,165 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet">
-        <script type="text/javascript" src="/static/data.js"></script>
-        <link rel="stylesheet" type="text/css" href="/static/style.css">
-    </head>
-    <title>Intense Donut</title>
-    <header>
-        <div id="title"><h1>Intense Donut</h1></div>
-        <div id="navigation">
-            <span class="filters" id="option1">Option 1</span>
-            <span class="filters" id="option2">Option 2</span>
-            <span class="filters" id="option3">Option 3</span>
-            <span class="filters" id="option4">Option 4</span>
+        <title>Intense Donut</title>
 
-        </div>
-    </header>
+        <script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+        <script type='text/javascript' src='//d3js.org/d3.v3.min.js'></script>
+
+        <script type='text/javascript' src='/static/data.js'></script>
+
+        <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Oxygen'/>
+        <link type='text/css' rel='stylesheet' href='/static/style.css'/>
+    </head>
     <body>
-        <div id="inputDiv">
-            <input id="upload" type='file' accept='har'></input>
+        <header>
+            <div id='title'>
+                <h1>Intense Donut</h1>
+            </div>
+            <div id='navigation'>
+                <span class='filters' id='option1'>Option 1</span>
+                <span class='filters' id='option2'>Option 2</span>
+                <span class='filters' id='option3'>Option 3</span>
+                <span class='filters' id='option4'>Option 4</span>
+            </div>
+        </header>
+        <div id='inputDiv'>
+            <input id='upload' type='file' accept='har'></input>
         </div>
-        <div id="container"></div>
+        <div id='container'>
+            <div id='chart'></div>
+            <div id='table'></div>
+        </div>
     </body>
+    <script type='text/javascript'>
+        var filter_settings = ['status', 'type', 'method', 'url', 'ipaddress'];
+
+        var dim = Math.min(window.innerHeight, window.innerWidth) * .6,
+            rad = dim / 2,
+            x = d3.scale.linear().range([0, 2 * Math.PI]),
+            y = d3.scale.sqrt().range([0, rad]),
+            color = d3.scale.category20c();
+
+        var svg = d3.select("body")
+            .append("svg")
+                .attr("width", dim)
+                .attr("height", dim)
+            .append("g")
+                .attr("transform", "translate(" + rad + "," + rad + ")");
+
+        var partition = d3.layout.partition()
+            .sort(null)
+            .value(function(d) { return 1; });
+
+        var arc = d3.svg.arc()
+            .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+            .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+            .innerRadius(function(d) { return Math.max(0, y(d.y)); })
+            .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+
+        var node;
+
+        function drawChart(root) {
+            node = root;
+            var path = svg.datum(root).selectAll("path")
+                .data(partition.nodes)
+                .enter().append("path")
+                    .attr("d", arc)
+                    .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+                    .on("click", click)
+                    .each(stash);
+
+            d3.selectAll("input").on("change", function change() {
+                var value = this.value === "count"
+                    ? function() { return 1; }
+                    : function(d) { return d.size; };
+
+                path
+                    .data(partition.value(value).nodes)
+                    .transition()
+                        .duration(1000)
+                        .attrTween("d", arcTweenData);
+            });
+
+            function click(d) {
+                node = d;
+                path.transition()
+                    .duration(1000)
+                    .attrTween("d", arcTweenZoom(d));
+            }
+        }
+
+        function stash(d) {
+            d.x0 = d.x;
+            d.dx0 = d.dx;
+        }
+
+        function arcTweenData(a, i) {
+            var oi = d3.interpolate({x: a.x0, dx: a.dx0}, a);
+            function tween(t) {
+                var b = oi(t);
+                a.x0 = b.x;
+                a.dx0 = b.dx;
+                return arc(b);
+            }
+            if (i == 0) {
+                var xd = d3.interpolate(x.domain(), [node.x, node.x + node.dx]);
+                return function(t) {
+                    x.domain(xd(t));
+                    return tween(t);
+                };
+            } else {
+                return tween;
+            }
+        }
+
+        function arcTweenZoom(d) {
+            var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+                yd = d3.interpolate(y.domain(), [d.y, 1]),
+                yr = d3.interpolate(y.range(), [d.y ? 20 : 0, rad]);
+            return function(d, i) {
+                return i
+                    ? function(t) { return arc(d); }
+                    : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+            };
+        }
+
+        function getChildren(data, level = 0) {
+            var children = [],
+                datasets = {};
+            if (filter_settings[level] && level < 5) {
+                for (var item in data) {
+                    if (!datasets[data[item][filter_settings[level]]]) {
+                        datasets[data[item][filter_settings[level]]] = [];
+                    }
+                    datasets[data[item][filter_settings[level]]].push(data[item]);
+                }
+                for (var set in datasets) {
+                    children.push({
+                        name: 'chartData_' + level,
+                        children: getChildren(datasets[set], level + 1)
+                    });
+                }
+                return children;
+            } else {
+                for (var item in data) {
+                    children.push({
+                        name: data[item].index,
+                        size: window.har_data.log.entries[data[item].index].time
+                    });
+                }
+                return children;
+            }
+        }
+
+        window.addEventListener('dataChanged', function() {
+            if (!window.har_data || !window.filter_data) return;
+
+            var chartData = {
+                name: 'chartData',
+                children: getChildren(window.filter_data)
+            };
+            drawChart(chartData);
+        });
+    </script>
 </html>

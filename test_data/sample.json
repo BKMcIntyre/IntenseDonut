@@ -1,0 +1,67 @@
+{
+    "name": "sample",
+    "children": [
+        {
+            "name": "sample_1",
+            "children": [
+                {
+                    "name": "sample_1_1",
+                    "children": [
+                        { "name": "sample_1_1_2", "size": "20" },
+                        { "name": "sample_1_1_3", "size": "5550" }
+                    ]
+                },
+                {
+                    "name": "sample_1_2",
+                    "children": [
+                        { "name": "sample_1_2_1", "size": "40" },
+                        { "name": "sample_1_2_2", "size": "50" },
+                        { "name": "sample_1_2_3", "size": "60" }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "sample_2",
+            "children": [
+                {
+                    "name": "sample_2_1",
+                    "children": [
+                        { "name": "sample_2_1_1", "size": "70" },
+                        { "name": "sample_2_1_2", "size": "80" },
+                        { "name": "sample_2_1_3", "size": "90" }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "sample_3",
+            "children": [
+                {
+                    "name": "sample_3_1",
+                    "children": [
+                        { "name": "sample_3_1_1", "size": "100" },
+                        { "name": "sample_3_1_2", "size": "110" },
+                        { "name": "sample_3_1_3", "size": "120" }
+                    ]
+                },
+                {
+                    "name": "sample_3_2",
+                    "children": [
+                        { "name": "sample_3_2_1", "size": "130" },
+                        { "name": "sample_3_2_2", "size": "140" },
+                        { "name": "sample_3_2_3", "size": "150" }
+                    ]
+                },
+                {
+                    "name": "sample_3_3",
+                    "children": [
+                        { "name": "sample_3_3_1", "size": "160" },
+                        { "name": "sample_3_3_2", "size": "170" },
+                        { "name": "sample_3_3_3", "size": "180" }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -44,3 +44,8 @@ div{
     display: flex;
     text-align: center;
 }
+
+path {
+  stroke: #fff;
+  fill-rule: evenodd;
+}
