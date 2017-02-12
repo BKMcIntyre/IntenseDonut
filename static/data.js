@@ -45,7 +45,7 @@ $(document).ready(function() {
 
                     if (type =='Not set') {
 
-                        if (value.request.url.indexOf('.js')) {
+                        if (value.request.url.indexOf('\.js') > 0) {
                             type = 'text/javascript';
                         }
                     }
