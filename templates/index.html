@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet">
+        <script type="text/javascript" src="/static/data.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/style.css">
+    </head>
     <title>Intense Donut</title>
     <header>
-        <h1>Intense Donut</h1>
+        <div id="title"><h1>Intense Donut</h1></div>
+        <div id="navigation">
+            <span class="filters" id="option1">Option 1</span>
+            <span class="filters" id="option2">Option 2</span>
+            <span class="filters" id="option3">Option 3</span>
+            <span class="filters" id="option4">Option 4</span>
+
+        </div>
     </header>
     <body>
-
-
-      <script src="/static/data.js"></script>
-
+        <div id="inputDiv">
+            <input id="upload" type='file' accept='har'></input>
+        </div>
+        <div id="container"></div>
     </body>
 </html>

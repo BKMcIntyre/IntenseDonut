@@ -1,0 +1,46 @@
+html{
+    font-family: Oxygen;
+}
+div{
+    margin:0px;
+    padding: 0px;
+}
+#title{
+    width: 100%;
+    text-align: center;
+}
+#navigation{
+    width: 100%;
+    margin:0px;
+    padding: 0px;
+    display: flex;
+}
+.filters{
+    display: flex-box;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    padding: 15px;
+    margin-left: 0px;
+    width: 25vw;
+}
+.filters:hover{
+    opacity: 0.7;
+    color: black;
+}
+#option1{
+    background: #FF4F42;
+}
+#option2{
+    background: #6BD3CC;
+}
+#option3{
+    background: #26617D;
+}
+#option4{
+    background: #FFC853;
+}
+#inputDiv{
+    display: flex;
+    text-align: center;
+}
