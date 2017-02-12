@@ -1,9 +1,13 @@
 html, body {
-    font-family: Oxygen;
+    font-family: "Helvetica";
     padding:0px;
     margin:0px;
     background: #F8F9FA;
     margin: 5px 20px;
+}
+
+header {
+    display: flex;
 }
 
 #top {
@@ -23,7 +27,12 @@ html, body {
     display: flex;
     padding: 10px;
 }
-
+#chart {
+    flex:1;
+}
+#table {
+    flex:1;
+}
 #styled_upload {
     width: 125px;
     height: 35px;
@@ -119,7 +128,8 @@ div {
 }
 
 #container {
-    color: #C0C2CE;
+    color: #333;
+    display:flex;
 }
 
 path {
@@ -161,11 +171,16 @@ path {
     width: 100%;
 
 }
+
+table tr {
+    width: 90%;
+}
 .index_children{
-    width: 150px;
+    width: 700px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
-    color: #9ECAE1;
+    text-align:left;
+    
   }
