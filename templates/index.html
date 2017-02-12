@@ -23,8 +23,8 @@
                 </div>
                 <div id='selections'>
                     <select class="select-filter">
-                        <option value="status">Status Code</option>
                         <option value="type">MIME Type</option>
+                        <option value="status">Status Code</option>
                         <option value="method">Request Method</option>
                         <option value="host">Host</option>
                         <option value="httpVersion">HTTP Version</option>
@@ -37,12 +37,21 @@
                         <option value="httpVersion">HTTP Version</option>
                     </select>
                     <select class="select-filter">
+                        <option value="method">Request Method</option>
+                        <option value="status">Status Code</option>
                         <option value="type">MIME Type</option>
                         <option value="host">Host</option>
-                        <option value="status">Status Code</option>
-                        <option value="method">Request Method</option>
+                        
                         <option value="httpVersion">HTTP Version</option>
-                    </select class="select-filter">
+                    </select>
+                    <!-- <select class="select-filter">
+                        <option value="httpVersion">HTTP Version</option>
+                        <option value="status">Status Code</option>
+                        <option value="type">MIME Type</option>
+                        <option value="host">Host</option>
+                        <option value="method">Request Method</option>
+                        
+                    </select> -->
                     <button id="render">Render</button>
                 </div>
             </div>
@@ -51,10 +60,10 @@
 
         <div id="container" class="data-frame">
             <div id='chart'></div>
-            <div id='table'>
+            <div id='table' class="table-frame">
                 <b>Filtered by</b>
                 <div id='parents'></div>
-                <table></table>
+                <table class="table-data"></table>
             </div>
         </div>
         <div id="allInfo"></div>

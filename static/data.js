@@ -71,7 +71,7 @@ $(document).ready(function() {
                         ipaddress: value.serverIPAddress,
                         status: "" + value.response.status,
                         type: type,
-                        time: value.time,
+                        time: Math.trunc(value.time),
                         host: l.hostname,
                         httpVersion: value.response.httpVersion,
                         path: l.pathname

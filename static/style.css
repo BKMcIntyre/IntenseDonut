@@ -63,11 +63,11 @@ header {
 
 }
 
-#upload{
+#upload {
     display: none;
 }
 
-#render{
+#render {
     width: 125px;
     height: 35px;
     box-sizing: border-box;
@@ -187,13 +187,28 @@ path {
 
 table tr {
     width: 90%;
+    line-height: 1.5;
 }
-.index_children{
+.index_children {
     width: 700px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
     text-align:left;
-    
-  }
+    border: none;
+    background: transparent
+}
+
+.index_children:hover {
+    color: #FF8FA4;
+    padding-left: 0;
+}
+
+.table-frame {
+
+}
+
+.table-data {
+
+}
