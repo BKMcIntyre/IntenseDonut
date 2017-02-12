@@ -40,9 +40,7 @@ html, body {
     font-weight: 300;
     font-family: Oxygen,Helvetica,Arial,sans-serif;
     text-transform: uppercase;
-    padding: 6px 20px;
     white-space: nowrap;
-    margin-left: 10px;
     -webkit-transition: background 200ms ease-in;
     -o-transition: background 200ms ease-in;
     transition: background 200ms ease-in;
@@ -81,7 +79,7 @@ html, body {
     -webkit-transition: background 200ms ease-in;
     -o-transition: background 200ms ease-in;
     transition: background 200ms ease-in;
-    margin: 10px 10px 0px 0px;
+    margin-left: 2em;
 }
 
 #render:hover {
@@ -97,6 +95,7 @@ div {
 }
 
 #inputDiv {
+
 }
 
 #selections {
@@ -129,7 +128,7 @@ path {
 }
 
 .select-filter {
-  border: 1px solid #C0C2CE;
+  border: 2px solid #C0C2CE;
   border-radius: 6px;
   background: white;
   padding: 5px 20px;
@@ -168,4 +167,5 @@ path {
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
+    color: #9ECAE1;
   }
