@@ -16,42 +16,41 @@
             <div id="top">
                 Intense Donut
             </div>
-            <div id='title'>
+        </header>
+
+        <div id="container" class="data-frame">
+            <div id='title-row' class="filter-frame">
                 <div id='inputDiv'>
                     <input id='upload' type='file' accept='har'></input>
                     <button id="styled_upload">UPLOAD</button>
                 </div>
                 <div id='selections'>
-                    <select>
+                    <select class="select-filter">
                         <option value="type">MIME Type</option>
                         <option value="status">Status Code</option>
                         <option value="method">Request Method</option>
                         <option value="host">Host</option>
                         <option value="httpVersion">HTTP Version</option>
                     </select>
-                    <select>
+                    <select class="select-filter">
                         <option value="status">Status Code</option>
                         <option value="type">MIME Type</option>
                         <option value="method">Request Method</option>
                         <option value="host">Host</option>
                         <option value="httpVersion">HTTP Version</option>
                     </select>
-                    <select>
+                    <select class="select-filter">
                         <option value="host">Host</option>
                         <option value="status">Status Code</option>
                         <option value="type">MIME Type</option>
                         <option value="method">Request Method</option>
                         <option value="httpVersion">HTTP Version</option>
-                    </select>
-                    <br>
+                    </select class="select-filter">
                     <button id="render">Render</button>
                 </div>
             </div>
-        </header>
-
-        <div id='container'>
             <div id='chart'></div>
-            
+
             <div id='table'>
                 <div id='parents'></div>
                 <table></table>
@@ -92,7 +91,7 @@
 
                     getAllParents(data['parent']);
 
-                } 
+                }
 
                 all_parents.push({
                     type: data.filter_name,
@@ -106,15 +105,15 @@
 
             for (var i in all_parents) {
                 if (all_parents[i].type && all_parents[i].name) {
-                    $('#parents').append($("<p></p>").text(all_parents[i].type + " : " + all_parents[i].name));    
+                    $('#parents').append($("<p></p>").text(all_parents[i].type + " : " + all_parents[i].name));
                 }
-                
+
             }
 
         }
 
-        var width = 1200,
-            height = 900,
+        var width = 700,
+            height = 500,
             radius = Math.min(width, height) / 2;
 
         var x = d3.scale.linear()
