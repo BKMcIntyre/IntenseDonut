@@ -17,10 +17,20 @@
                 <h1>Intense Donut</h1>
             </div>
             <div id='navigation'>
-                <span class='filters' id='option1'>Option 1</span>
-                <span class='filters' id='option2'>Option 2</span>
-                <span class='filters' id='option3'>Option 3</span>
-                <span class='filters' id='option4'>Option 4</span>
+
+                <select>
+                  <option value="status">status</option>
+                  <option value="type">type</option>
+                  <option value="method">method</option>
+                  <option value="domain">domain</option>
+                  <option value="ipaddress">ipaddress</option>
+                </select>
+
+                <span class='filters' data-filter-type="status">Option 1</span>
+                <span class='filters' data-filter-type="type">Option 2</span>
+                <span class='filters' data-filter-type="method">Option 3</span>
+                <span class='filters' data-filter-type="domain">Option 4</span>
+                <span class='filters' data-filter-type="ipaddress">Option 5</span>
             </div>
         </header>
         <div id='inputDiv'>
@@ -32,24 +42,28 @@
         </div>
     </body>
     <script type='text/javascript'>
-        var filter_settings = ['status', 'type', 'method', 'url', 'ipaddress'];
+        
 
-        var dim = Math.min(window.innerHeight, window.innerWidth) * .6,
-            rad = dim / 2,
-            x = d3.scale.linear().range([0, 2 * Math.PI]),
-            y = d3.scale.sqrt().range([0, rad]),
-            color = d3.scale.category20c();
+        var width = 1200,
+            height = 900,
+            radius = Math.min(width, height) / 2;
 
-        var svg = d3.select("body")
-            .append("svg")
-                .attr("width", dim)
-                .attr("height", dim)
-            .append("g")
-                .attr("transform", "translate(" + rad + "," + rad + ")");
+        var x = d3.scale.linear()
+            .range([0, 2 * Math.PI]);
+
+        var y = d3.scale.linear()
+            .range([0, radius]);
+
+        var color = d3.scale.category20c();
+
+        var svg = d3.select("#chart").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+          .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
         var partition = d3.layout.partition()
-            .sort(null)
-            .value(function(d) { return 1; });
+            .value(function(d) { return d.size; });
 
         var arc = d3.svg.arc()
             .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
@@ -57,72 +71,74 @@
             .innerRadius(function(d) { return Math.max(0, y(d.y)); })
             .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
 
-        var node;
 
-        function drawChart(root) {
-            node = root;
-            var path = svg.datum(root).selectAll("path")
-                .data(partition.nodes)
-                .enter().append("path")
-                    .attr("d", arc)
-                    .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-                    .on("click", click)
-                    .each(stash);
+          // Interpolate the scales!
+        function arcTween(d) {
+          var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+              yd = d3.interpolate(y.domain(), [d.y, 1]),
+              yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+          return function(d, i) {
+            return i
+                ? function(t) { return arc(d); }
+                : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+          };
+        }
 
-            d3.selectAll("input").on("change", function change() {
-                var value = this.value === "count"
-                    ? function() { return 1; }
-                    : function(d) { return d.size; };
+        function drawChart(root) { 
 
-                path
-                    .data(partition.value(value).nodes)
-                    .transition()
-                        .duration(1000)
-                        .attrTween("d", arcTweenData);
-            });
 
-            function click(d) {
-                node = d;
+            
+              var g = svg.selectAll("g")
+                  .data(partition.nodes(root))
+                .enter().append("g");
+
+              var path = g.append("path")
+                .attr("d", arc)
+                .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+                .on("click", click);
+
+              var text = g.append("text")
+                .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+                .attr("x", function(d) { return y(d.y); })
+                .attr("dx", "6") // margin
+                .attr("dy", ".35em") // vertical-align
+                .text(function(d) { return d.name; });
+
+              function click(d) {
+                // fade out all text elements
+                text.transition().attr("opacity", 0);
+
                 path.transition()
-                    .duration(1000)
-                    .attrTween("d", arcTweenZoom(d));
-            }
+                  .duration(750)
+                  .attrTween("d", arcTween(d))
+                  .each("end", function(e, i) {
+                      // check if the animated element's data e lies within the visible angle span given in d
+                      if (e.x >= d.x && e.x < (d.x + d.dx)) {
+                        // get a selection of the associated text element
+                        var arcText = d3.select(this.parentNode).select("text");
+                        // fade in the text element and recalculate positions
+                        arcText.transition().duration(750)
+                          .attr("opacity", 1)
+                          .attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
+                          .attr("x", function(d) { return y(d.y); });
+                      }
+                  });
+              }
+            
+
+            d3.select(self.frameElement).style("height", height + "px");
+
+          
+
+
         }
 
-        function stash(d) {
-            d.x0 = d.x;
-            d.dx0 = d.dx;
+
+        function computeTextRotation(d) {
+          return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
         }
 
-        function arcTweenData(a, i) {
-            var oi = d3.interpolate({x: a.x0, dx: a.dx0}, a);
-            function tween(t) {
-                var b = oi(t);
-                a.x0 = b.x;
-                a.dx0 = b.dx;
-                return arc(b);
-            }
-            if (i == 0) {
-                var xd = d3.interpolate(x.domain(), [node.x, node.x + node.dx]);
-                return function(t) {
-                    x.domain(xd(t));
-                    return tween(t);
-                };
-            } else {
-                return tween;
-            }
-        }
 
-        function arcTweenZoom(d) {
-            var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
-                yd = d3.interpolate(y.domain(), [d.y, 1]),
-                yr = d3.interpolate(y.range(), [d.y ? 20 : 0, rad]);
-            return function(d, i) {
-                return i
-                    ? function(t) { return arc(d); }
-                    : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
-            };
-        }
 
         function getChildren(data, level = 0) {
             var children = [],
@@ -132,11 +148,12 @@
                     if (!datasets[data[item][filter_settings[level]]]) {
                         datasets[data[item][filter_settings[level]]] = [];
                     }
+
                     datasets[data[item][filter_settings[level]]].push(data[item]);
                 }
                 for (var set in datasets) {
                     children.push({
-                        name: 'chartData_' + level,
+                        name: datasets[item][filter_settings[level]],
                         children: getChildren(datasets[set], level + 1)
                     });
                 }
@@ -144,7 +161,7 @@
             } else {
                 for (var item in data) {
                     children.push({
-                        name: data[item].index,
+                        name: window.har_data.log.entries[data[item].index].request.url,
                         size: window.har_data.log.entries[data[item].index].time
                     });
                 }
@@ -152,14 +169,76 @@
             }
         }
 
+
+        /**
+         * Filters are in reverse order !!
+         **/
+        function makeChildren(requests, filters) {
+
+            var children = [];
+
+            if (filters.length > 0) {
+
+                var filter_name = filters[0];
+
+                var divided_lists = {};
+
+                // Divide the requests by filter name
+                for (var index in requests) {
+                    var request = requests[index];
+                    if (!divided_lists[request[filter_name]]) {
+                        divided_lists[request[filter_name]] = [];
+                    }
+                    divided_lists[request[filter_name]].push(request);
+                }
+
+                // Create children per divided list of requests
+                for (var index in divided_lists) {
+
+                    // move to next filter
+                    children.push({
+                        name: index,
+                        children: makeChildren(divided_lists[index], filters.slice(1))
+                    })
+                }
+
+            } else {
+                // For all remaining leafs
+                for (var index in requests) {
+                    children.push({
+                        name: "" + requests[index].time + "ms - " + requests[index].path,
+                        size: requests[index].time
+                    });
+                }
+            }
+
+            return children;
+        }
+
+
         window.addEventListener('dataChanged', function() {
             if (!window.har_data || !window.filter_data) return;
 
+            var filter_settings = ['method', 'status', 'httpVersion', 'type', 'host'];
+
+            // $(".filters").each(function (index) {
+            //     filter_settings.push($( this ).data("filter-type"));
+            // });
+
+
             var chartData = {
-                name: 'chartData',
-                children: getChildren(window.filter_data)
+                name: '',
+                children: makeChildren(window.filter_data, filter_settings)
             };
+
+            // { filter_setting : [  items that match filter ] }
+            // { filter_setting.filter_setting2 : [  items that match filter ] }
+
+            
+
+            console.log(chartData);
             drawChart(chartData);
+
         });
     </script>
 </html>

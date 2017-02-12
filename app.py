@@ -3,7 +3,7 @@ app = Flask(__name__, static_url_path="")
 
 @app.route("/")
 def hello():
-    return render_template('index.html', my_string="Wheeeee!", my_list=[0,1,2,3,4,5])
+    return render_template('index.html')
 
 @app.route('/static/<path:path>')
 def send_js(path):

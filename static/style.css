@@ -17,7 +17,6 @@ div{
 }
 .filters{
     display: flex-box;
-    color: white;
     cursor: pointer;
     text-align: center;
     padding: 15px;
@@ -28,18 +27,8 @@ div{
     opacity: 0.7;
     color: black;
 }
-#option1{
-    background: #FF4F42;
-}
-#option2{
-    background: #6BD3CC;
-}
-#option3{
-    background: #26617D;
-}
-#option4{
-    background: #FFC853;
-}
+
+
 #inputDiv{
     display: flex;
     text-align: center;
