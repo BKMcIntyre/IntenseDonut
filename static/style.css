@@ -1,5 +1,78 @@
-html{
+html, body{
     font-family: Oxygen;
+    padding:0px;
+    margin:0px;
+}
+#top{
+    background: #FD992E;
+    border: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    z-index: 101;
+    font-size: 2em;
+    font-family: Oxygen;
+    color:white;
+    text-align: center;
+    padding: 10px 0px 10px 0px;
+}
+#title{
+    background: #314054;
+    border: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    /*min-height: 65px;*/
+    z-index: 101;
+    font-family: Oxygen;
+    color:white;
+    text-align: center;
+    padding: 20px 0px 20px 0px;
+}
+#styled_upload{
+    width: 125px;
+    height: 35px;
+    box-sizing: border-box;
+    background: #1bc138;
+    border: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,.3);
+    color: #fff;
+    border-radius: 40px;
+    outline: none;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: .05em;
+    font-weight: 300;
+    font-family: Oxygen,Helvetica,Arial,sans-serif;
+    text-transform: uppercase;
+    padding: 6px 20px;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+#upload{
+    display: none;
+}
+select{
+    font-size: 1em;
+    font-family: Oxygen;
+}
+#render{
+    width: 125px;
+    height: 35px;
+    box-sizing: border-box;
+    background: #1bc138;
+    border: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,.3);
+    color: #fff;
+    border-radius: 40px;
+    outline: none;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: .05em;
+    font-weight: 300;
+    font-family: Oxygen,Helvetica,Arial,sans-serif;
+    text-transform: uppercase;
+    padding: 6px 20px;
+    white-space: nowrap;
+    margin: 10px 10px 0px 0px;
 }
 div{
     margin:0px;

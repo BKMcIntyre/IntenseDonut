@@ -8,14 +8,18 @@
 
         <script type='text/javascript' src='/static/data.js'></script>
 
-        <!-- <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Oxygen'/> -->
+        <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Oxygen'/>
         <link type='text/css' rel='stylesheet' href='/static/style.css'/>
     </head>
     <body>
         <header>
+            <div id="top">
+                Intense Donut
+            </div>
             <div id='title'>
                 <div id='inputDiv'>
                     <input id='upload' type='file' accept='har'></input>
+                    <button id="styled_upload">UPLOAD</button>
                 </div>
                 <div id='selections'>
                     <select>
@@ -39,32 +43,32 @@
                         <option value="method">Request Method</option>
                         <option value="httpVersion">HTTP Version</option>
                     </select>
+                    <br>
                     <button id="render">Render</button>
                 </div>
             </div>
         </header>
-        
+
         <div id='container'>
             <div id='chart'></div>
             <div id='table'>
                 <p>
-                    <b>Type : </b><span id="selected_type"></span>    
+                    <b>Type : </b><span id="selected_type"></span>
                 </p>
                 <p>
-                    <b>Value : </b><span id="selected_name"></span>    
+                    <b>Value : </b><span id="selected_name"></span>
                 </p>
-
                 <p>
-                    <b>Children</b>    
+                    <b>Children</b>
                 </p>
 
                 <table>
-                   
+
                 </table>
-                
 
 
-                
+
+
 
             </div>
         </div>
@@ -85,7 +89,7 @@
         function getAllLeaf(data) {
 
             if (data['children']) {
-                getAllLeaf(data.children);    
+                getAllLeaf(data.children);
             } else {
                 all_children.push(data);
             }
@@ -99,15 +103,15 @@
         $.each(all_children, function(i) {
 
             $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
-            
+
 
         });
- 
+
 
 
 
     }
-        
+
 
         var width = 1200,
             height = 900,
@@ -149,8 +153,8 @@
           };
         }
 
-        function drawChart(root) { 
-            
+        function drawChart(root) {
+
               var g = svg.selectAll("g")
                   .data(partition.nodes(root))
                 .enter().append("g");
@@ -169,7 +173,7 @@
 
               function click(d) {
 
-                
+
 
                 showDetails(d);
                 // fade out all text elements
@@ -191,11 +195,11 @@
                       }
                   });
               }
-            
+
 
             d3.select(self.frameElement).style("height", height + "px");
 
-          
+
 
 
         }
