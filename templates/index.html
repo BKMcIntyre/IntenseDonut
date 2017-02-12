@@ -51,12 +51,14 @@
 
         <div id='container'>
             <div id='chart'></div>
-            
+
             <div id='table'>
                 <div id='parents'></div>
                 <table></table>
             </div>
         </div>
+        <div id="allInfo"></div>
+
     </body>
     <script type='text/javascript'>
 
@@ -80,7 +82,7 @@
 
             $.each(all_children, function(i) {
                 // Table content
-                $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
+                $('table').append($('<tr><td></td></tr>').html('<button class="index_children" onclick="renderInfo('+all_children[i].index+')">'+all_children[i].index+'</button>'));
             });
 
             // Parent data
@@ -92,7 +94,7 @@
 
                     getAllParents(data['parent']);
 
-                } 
+                }
 
                 all_parents.push({
                     type: data.filter_name,
@@ -106,11 +108,16 @@
 
             for (var i in all_parents) {
                 if (all_parents[i].type && all_parents[i].name) {
-                    $('#parents').append($("<p></p>").text(all_parents[i].type + " : " + all_parents[i].name));    
+                    $('#parents').append($("<p></p>").text(all_parents[i].type + " : " + all_parents[i].name));
                 }
-                
             }
+            $('#parents').append($("<p></p>").text('References:'));
+        }
 
+        function renderInfo(id){
+            $('#allInfo').empty();
+            var jsonPretty = JSON.stringify(har_data.log.entries[id], null, ' ');
+            $('#allInfo').append($('<p>').text(jsonPretty));
         }
 
         var width = 1200,

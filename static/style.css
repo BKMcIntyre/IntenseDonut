@@ -114,3 +114,9 @@ path {
   stroke: #fff;
   fill-rule: evenodd;
 }
+
+#allInfo{
+    display: block;
+    width: 100%;
+
+}
