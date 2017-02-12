@@ -48,10 +48,7 @@
             <div id='chart'></div>
             <div id='table'>
                 <p>
-                    <b>Type : </b><span id="selected_type"></span>    
-                </p>
-                <p>
-                    <b>Value : </b><span id="selected_name"></span>    
+                    <b><span id="selected_type"></span> : </b><span id="selected_name"></span>    
                 </p>
 
                 <p>
@@ -84,28 +81,34 @@
 
         function getAllLeaf(data) {
 
+
             if (data['children']) {
-                getAllLeaf(data.children);    
+
+                for(var i in data['children']) {
+
+                    getAllLeaf(data['children'][i]);
+
+
+                }
+                
             } else {
                 all_children.push(data);
             }
 
         }
 
-        getAllLeaf(d.children);
+        getAllLeaf(d);
 
-        console.log(all_children);
 
         $.each(all_children, function(i) {
-
-            $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
             
-
+            $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
         });
+
+
+        var all_parents = [];
+
  
-
-
-
     }
         
 
@@ -207,35 +210,35 @@
 
 
 
-        function getChildren(data, level = 0) {
-            var children = [],
-                datasets = {};
-            if (filter_settings[level] && level < 5) {
-                for (var item in data) {
-                    if (!datasets[data[item][filter_settings[level]]]) {
-                        datasets[data[item][filter_settings[level]]] = [];
-                    }
+        // function getChildren(data, level = 0) {
+        //     var children = [],
+        //         datasets = {};
+        //     if (filter_settings[level] && level < 5) {
+        //         for (var item in data) {
+        //             if (!datasets[data[item][filter_settings[level]]]) {
+        //                 datasets[data[item][filter_settings[level]]] = [];
+        //             }
 
-                    datasets[data[item][filter_settings[level]]].push(data[item]);
-                }
-                for (var set in datasets) {
-                    children.push({
-                        name: datasets[item][filter_settings[level]],
-                        children: getChildren(datasets[set], level + 1)
-                    });
-                }
-                return children;
-            } else {
-                for (var item in data) {
-                    children.push({
-                        name: window.har_data.log.entries[data[item].index].request.url,
-                        size: window.har_data.log.entries[data[item].index].time,
-                        id: data[item].index
-                    });
-                }
-                return children;
-            }
-        }
+        //             datasets[data[item][filter_settings[level]]].push(data[item]);
+        //         }
+        //         for (var set in datasets) {
+        //             children.push({
+        //                 name: datasets[item][filter_settings[level]],
+        //                 children: getChildren(datasets[set], level + 1)
+        //             });
+        //         }
+        //         return children;
+        //     } else {
+        //         for (var item in data) {
+        //             children.push({
+        //                 name: window.har_data.log.entries[data[item].index].request.url,
+        //                 size: window.har_data.log.entries[data[item].index].time,
+        //                 id: data[item].index
+        //             });
+        //         }
+        //         return children;
+        //     }
+        // }
 
 
         /**
