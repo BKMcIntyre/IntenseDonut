@@ -38,7 +38,7 @@ $(document).ready(function() {
 
                     var type = 'Not set';
 
-                    if (value.response.content.mimeType.indexOf(';') > 0) {
+                    if (value.response.content['mimeType'] && value.response.content.mimeType.indexOf(';') > 0) {
                         type = value.response.content.mimeType.substring(0, value.response.content.mimeType.indexOf(';'));
                     }
 

@@ -51,10 +51,11 @@
 
         <div id='container'>
             <div id='chart'></div>
+            
             <div id='table'>
-                <p>
-                    <b><span id="selected_type"></span> : </b><span id="selected_name"></span>    
-                </p>
+                <div id='parents'>
+                </div>
+                
                 <p>
                     <b>Children</b>
                 </p>
@@ -62,62 +63,65 @@
                 <table>
 
                 </table>
-
-
-
-
-
             </div>
         </div>
     </body>
     <script type='text/javascript'>
 
-    function showDetails(d) {
-        console.log(d);
+        function showDetails(d) {
+
+            console.log(d);
+
+            $('table').empty();
+
+            var all_children = [];
+
+            function getAllLeaf(data) {
+                if (data['children']) {
+                    for(var i in data['children']) {
+                        getAllLeaf(data['children'][i]);
+                    }
+                } else {
+                    all_children.push(data);
+                }
+            }
+            getAllLeaf(d);
+            $.each(all_children, function(i) {
+                $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
+            });
+
+            var all_parents = [];
+
+            function getAllParents(data) {
+                if (data['parent']) {
+
+                    getAllParents(data['parent']);
+
+                } 
+
+                all_parents.push({
+                    type: data.filter_name,
+                    name: data.name
+                });
+            }
+
+            getAllParents(d);
 
 
-        $('#selected_type').text(d.filter_name);
-        $('#selected_name').text(d.name);
 
-        $('table').empty();
+            console.log(all_parents);
 
-        var all_children = [];
-
-        function getAllLeaf(data) {
+            $('#parents').empty();
 
 
-            if (data['children']) {
-
-
-                for(var i in data['children']) {
-
-                    getAllLeaf(data['children'][i]);
-
-
+            for (var i in all_parents) {
+                if (all_parents[i].type && all_parents[i].name) {
+                    $('#parents').append($("<p></p>").text(all_parents[i].type + " : " + all_parents[i].name));    
                 }
                 
-            } else {
-                all_children.push(data);
             }
 
         }
-
-        getAllLeaf(d);
-
-
-        $.each(all_children, function(i) {
-
-            
-            $('table').append($('<tr><td></td></tr>').text(all_children[i].index));
-        });
-
-
-
-        var all_parents = [];
-
- 
-    }
-
 
         var width = 1200,
             height = 900,
