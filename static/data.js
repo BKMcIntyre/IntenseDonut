@@ -49,8 +49,6 @@ $(document).ready(function() {
                         
                     }
                     
-
-
                     if (type =='Not set') {
                         var url_lower = value.request.url.toLowerCase();
                         if (url_lower.indexOf('\.js') > 0) {

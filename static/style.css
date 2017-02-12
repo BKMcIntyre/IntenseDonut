@@ -137,6 +137,19 @@ path {
   fill-rule: evenodd;
 }
 
+#parents {
+    background: #f1f1f1;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+#parents p {
+    margin-left:1em;
+}
+#parents p::first-letter {
+    text-transform:capitalize;
+}
+
 .select-filter {
   border: 2px solid #C0C2CE;
   border-radius: 6px;

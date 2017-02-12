@@ -52,6 +52,7 @@
         <div id="container" class="data-frame">
             <div id='chart'></div>
             <div id='table'>
+                <b>Filtered by</b>
                 <div id='parents'></div>
                 <table></table>
             </div>
@@ -107,10 +108,10 @@
 
             for (var i in all_parents) {
                 if (all_parents[i].type && all_parents[i].name) {
-                    $('#parents').append($("<p></p>").text(all_parents[i].type + " : " + all_parents[i].name));
+                    $('#parents').append($("<p></p>").text(all_parents[i].type + " is " + all_parents[i].name));
                 }
             }
-            $('#parents').append($("<p></p>").text('References:'));
+            //$('#parents').append($("<p></p>").text('References:'));
         }
 
         function renderInfo(id){
