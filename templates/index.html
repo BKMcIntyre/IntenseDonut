@@ -1,327 +1,59 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Intense Donut</title>
 
-        <script type='text/javascript' src='/static/jquery.min.js'></script>
-        <script type='text/javascript' src='/static/d3.v3.js'></script>
+<head>
+    <title>Intense Donut</title>
+    <script type='text/javascript' src='/static/jquery.min.js'></script>
+    <script type='text/javascript' src='/static/d3.v3.js'></script>
+    <script type='text/javascript' src='/static/data.js'></script>
+    <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Oxygen' />
+    <link type='text/css' rel='stylesheet' href='/static/style.css' />
+</head>
 
-        <script type='text/javascript' src='/static/data.js'></script>
-
-        <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Oxygen'/>
-        <link type='text/css' rel='stylesheet' href='/static/style.css'/>
-    </head>
-    <body>
-        <header>
-            <div id="top" style="margin-right:2em;">
-                Intense Donut
+<body>
+    <header>
+        <div id="top" style="margin-right:2em;">
+            Intense Donut
+        </div>
+        <div id='title-row' class="filter-frame">
+            <div id='inputDiv'>
+                <input id='upload' type='file' accept='har'></input>
+                <button id="styled_upload">UPLOAD</button>
             </div>
-            <div id='title-row' class="filter-frame">
-                <div id='inputDiv'>
-                    <input id='upload' type='file' accept='har'></input>
-                    <button id="styled_upload">UPLOAD</button>
-                </div>
-                <div id='selections'>
-                    <select class="select-filter">
-                        <option value="type">MIME Type</option>
-                        <option value="status">Status Code</option>
-                        <option value="method">Request Method</option>
-                        <option value="host">Host</option>
-                        <option value="httpVersion">HTTP Version</option>
-                    </select>
-                    <select class="select-filter">
-                        <option value="host">Host</option>
-                        <option value="status">Status Code</option>
-                        <option value="type">MIME Type</option>
-                        <option value="method">Request Method</option>
-                        <option value="httpVersion">HTTP Version</option>
-                    </select>
-                    <select class="select-filter">
-                        <option value="method">Request Method</option>
-                        <option value="status">Status Code</option>
-                        <option value="type">MIME Type</option>
-                        <option value="host">Host</option>
-                        
-                        <option value="httpVersion">HTTP Version</option>
-                    </select>
-                    <!-- <select class="select-filter">
-                        <option value="httpVersion">HTTP Version</option>
-                        <option value="status">Status Code</option>
-                        <option value="type">MIME Type</option>
-                        <option value="host">Host</option>
-                        <option value="method">Request Method</option>
-                        
-                    </select> -->
-                    <button id="render">Render</button>
-                </div>
-            </div>
-        </header>
-
-
-        <div id="container" class="data-frame">
-            <div id='chart'></div>
-            <div id='table' class="table-frame">
-
-                <b>Filtered by</b>
-
-                                <div id='parents' class="filter-legend"></div>
-
-                <table class="table-data"></table>
+            <div id='selections'>
+                <select class="select-filter">
+                    <option value="type">MIME Type</option>
+                    <option value="status">Status Code</option>
+                    <option value="method">Request Method</option>
+                    <option value="host">Host</option>
+                    <option value="httpVersion">HTTP Version</option>
+                </select>
+                <select class="select-filter">
+                    <option value="host">Host</option>
+                    <option value="status">Status Code</option>
+                    <option value="type">MIME Type</option>
+                    <option value="method">Request Method</option>
+                    <option value="httpVersion">HTTP Version</option>
+                </select>
+                <select class="select-filter">
+                    <option value="method">Request Method</option>
+                    <option value="status">Status Code</option>
+                    <option value="type">MIME Type</option>
+                    <option value="host">Host</option>
+                    <option value="httpVersion">HTTP Version</option>
+                </select>
+                <button id="render">Render</button>
             </div>
         </div>
-        <div id="allInfo"></div>
+    </header>
+    <div id="container" class="data-frame">
+        <div id='chart'></div>
+        <div id='table' class="table-frame">
+            <div id='parents' class="filter-legend"></div>
+            <table class="table-data"></table>
+        </div>
+    </div>
+    <div id="allInfo"></div>
+</body>
 
-    </body>
-    <script type='text/javascript'>
-
-        function showDetails(d) {
-
-            $('table').empty();
-
-            var all_children = [];
-
-            function getAllLeaf(data) {
-                if (data['children']) {
-                    for(var i in data['children']) {
-                        getAllLeaf(data['children'][i]);
-                    }
-                } else {
-                    all_children.push(data);
-                }
-            }
-
-            getAllLeaf(d);
-
-            $.each(all_children, function(i) {
-                // Table content
-                $('table').append($('<tr><td></td></tr>').html('<button class="index_children" onclick="renderInfo('+all_children[i].index+')">'+ all_children[i].size + 'ms - ' + all_children[i].url+'</button>'));
-            });
-
-            // Parent data
-
-            var all_parents = [];
-
-            function getAllParents(data) {
-                if (data['parent']) {
-
-                    getAllParents(data['parent']);
-
-                }
-
-                all_parents.push({
-                    type: data.filter_name,
-                    name: data.name
-                });
-            }
-
-            getAllParents(d);
-
-            $('#parents').empty();
-
-            for (var i in all_parents) {
-                if (all_parents[i].type && all_parents[i].name) {
-                    $('#parents').append($("<p></p>").text(all_parents[i].type + " is " + all_parents[i].name));
-                }
-            }
-            //$('#parents').append($("<p></p>").text('References:'));
-        }
-
-        function renderInfo(id){
-            $('#allInfo').empty();
-            var jsonPretty = JSON.stringify(har_data.log.entries[id], null, ' ');
-            $('#allInfo').append($('<pre>').text(jsonPretty));
-        }
-
-        var width = 800,
-            height = 780,
-            radius = Math.min(width, height) / 2;
-
-        var x = d3.scale.linear()
-            .range([0, 2 * Math.PI]);
-
-        var y = d3.scale.linear()
-            .range([0, radius]);
-
-        var color = d3.scale.category20c();
-
-        var svg = d3.select("#chart").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-          .append("g")
-            .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
-
-        var partition = d3.layout.partition()
-            .value(function(d) { return d.size; });
-
-        var arc = d3.svg.arc()
-            .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
-            .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
-            .innerRadius(function(d) { return Math.max(0, y(d.y)); })
-            .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
-
-
-          // Interpolate the scales!
-        function arcTween(d) {
-          var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
-              yd = d3.interpolate(y.domain(), [d.y, 1]),
-              yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
-          return function(d, i) {
-            return i
-                ? function(t) { return arc(d); }
-                : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
-          };
-        }
-
-        function drawChart(root) {
-
-              var g = svg.selectAll("g")
-                  .data(partition.nodes(root))
-                .enter().append("g");
-
-              var path = g.append("path")
-                .attr("d", arc)
-                .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-                .on("click", click);
-
-              var text = g.append("text")
-                .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-                .attr("x", function(d) { return y(d.y); })
-                .attr("dx", "6") // margin
-                .attr("dy", ".35em") // vertical-align
-                .text(function(d) {
-
-                    return d.name;
-                })
-                .on("click", click);
-
-              function click(d) {
-
-                showDetails(d);
-                // fade out all text elements
-                text.transition().attr("opacity", 0);
-
-                path.transition()
-                  .duration(750)
-                  .attrTween("d", arcTween(d))
-                  .each("end", function(e, i) {
-                      // check if the animated element's data e lies within the visible angle span given in d
-                      if (e.x >= d.x && e.x < (d.x + d.dx)) {
-                        // get a selection of the associated text element
-                        var arcText = d3.select(this.parentNode).select("text");
-                        // fade in the text element and recalculate positions
-                        arcText.transition().duration(750)
-                          .attr("opacity", 1)
-                          .attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
-                          .attr("x", function(d) { return y(d.y); });
-                      }
-                  });
-              }
-
-
-            d3.select(self.frameElement).style("height", height + "px");
-
-
-
-
-        }
-
-
-        function computeTextRotation(d) {
-          return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
-        }
-
-
-
-        // function getChildren(data, level = 0) {
-        //     var children = [],
-        //         datasets = {};
-        //     if (filter_settings[level] && level < 5) {
-        //         for (var item in data) {
-        //             if (!datasets[data[item][filter_settings[level]]]) {
-        //                 datasets[data[item][filter_settings[level]]] = [];
-        //             }
-
-        //             datasets[data[item][filter_settings[level]]].push(data[item]);
-        //         }
-        //         for (var set in datasets) {
-        //             children.push({
-        //                 name: datasets[item][filter_settings[level]],
-        //                 children: getChildren(datasets[set], level + 1)
-        //             });
-        //         }
-        //         return children;
-        //     } else {
-        //         for (var item in data) {
-        //             children.push({
-        //                 name: window.har_data.log.entries[data[item].index].request.url,
-        //                 size: window.har_data.log.entries[data[item].index].time,
-        //                 id: data[item].index
-        //             });
-        //         }
-        //         return children;
-        //     }
-        // }
-
-
-        /**
-         * Filters are in reverse order !!
-         **/
-        function makeChildren(requests, filters) {
-
-            var children = [];
-
-            if (filters.length > 0) {
-
-                var filter_name = filters[0];
-
-                var divided_lists = {};
-
-                // Divide the requests by filter name
-                for (var index in requests) {
-                    var request = requests[index];
-                    if (!divided_lists[request[filter_name]]) {
-                        divided_lists[request[filter_name]] = [];
-                    }
-                    divided_lists[request[filter_name]].push(request);
-                }
-
-                // Create children per divided list of requests
-                for (var index in divided_lists) {
-
-                    // move to next filter
-                    children.push({
-                        filter_name: filter_name,
-                        name: index,
-                        children: makeChildren(divided_lists[index], filters.slice(1))
-                    })
-                }
-
-            } else {
-                // For all remaining leafs
-                for (var index in requests) {
-                    children.push({
-                        name: "" + requests[index].time + "ms",
-                        size: requests[index].time,
-                        index: requests[index].index,
-                        url: requests[index].url
-                    });
-                }
-            }
-
-            return children;
-        }
-
-
-        window.addEventListener('dataChanged', function() {
-            if (!window.har_data || !window.filter_data) return;
-
-            var chartData = {
-                name: '',
-                children: makeChildren(window.filter_data, window.filter_settings)
-            };
-
-            drawChart(chartData);
-
-        });
-    </script>
 </html>
